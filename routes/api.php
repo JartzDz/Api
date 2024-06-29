@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\RegistroController;
 use App\Http\Controllers\Api\CategoriaNegocioController;
 use App\Http\Controllers\Api\NegociosController;
 use App\Http\Controllers\Api\CategoriaController;
+use App\Http\Controllers\Api\ProductosController;
+
 
 //RUTAS PARA INICIO Y CIERRE DE SESIÓN
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])
@@ -54,6 +56,13 @@ Route::post('/categorias', [CategoriaController::class, 'store']);
 Route::get('/categorias/{id}', [CategoriaController::class, 'show']);
 Route::put('/categorias/{id}', [CategoriaController::class, 'update']);
 Route::delete('/categorias/{id}', [CategoriaController::class, 'destroy']);
+
+// Rutas para Categorías de Cada Negocio
+Route::get('/productos', [ProductosController::class, 'index']);
+Route::post('/productos', [ProductosController::class, 'store']);
+Route::get('/productos/{id}', [ProductosController::class, 'show']);
+Route::put('/productos/{id}', [ProductosController::class, 'update']);
+Route::delete('/productos/{id}', [ProductosController::class, 'destroy']);
 
 
 // Rutas para Clientes
