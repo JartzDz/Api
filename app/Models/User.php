@@ -1,45 +1,39 @@
 <?php
 
+// app/Models/User.php
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $table = 'usuario'; // o 'usuario' si esa es tu tabla
+
+    protected $primaryKey = 'id_usuario'; // Especifica la clave primaria
+
+    public $timestamps = false;
+
     protected $fillable = [
-        'name',
         'email',
-        'password',
+        'contrasenia',
+        'telefono',
+        'posicion_x',
+        'posicion_y',
+        'fecha_registro',
+        'tipo_usuario',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
-        'password',
+        'contrasenia',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
+    public function getAuthPassword()
+    {
+        return $this->contrasenia;
+    }
 }
