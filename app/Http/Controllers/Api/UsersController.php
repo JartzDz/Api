@@ -1,38 +1,62 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use Supabase\SupabaseClient;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class UsersController extends Controller
 {
-    protected $supabase;
-
-    public function __construct()
-    {
-        $supabaseUrl = env('SUPABASE_URL');
-        $supabaseKey = env('SUPABASE_KEY');
-
-        $this->supabase = new SupabaseClient($supabaseUrl, $supabaseKey);
-    }
-
     public function index()
     {
-        // Consulta todos los usuarios desde la tabla 'usuario'
-        $response = $this->supabase
-            ->table('usuario')
-            ->select('*')
-            ->execute();
-
-        if ($response->error) {
-            // Manejar el error si ocurre
-            return response()->json(['error' => $response->error->message], 500);
-        }
-
-        // Obtén los datos de la respuesta
-        $usuarios = $response->data;
+        // Consulta todos los usuarios desde la tabla 'usuarios' en el esquema 'public'
+        $usuarios = DB::table('public.usuario')->get();
 
         return response()->json($usuarios);
+    }
+
+    public function store(Request $request)
+    {
+        // Ejemplo de creación de usuario
+        $usuario = DB::table('public.usuario')->insert([
+            'nombre' => $request->input('nombre'),
+            'email' => $request->input('email'),
+            // Agregar otros campos según sea necesario
+        ]);
+
+        return response()->json(['message' => 'Usuario creado correctamente']);
+    }
+
+    public function show($id)
+    {
+        // Consulta un usuario específico por su ID
+        $usuario = DB::table('public.usuario')->where('id', $id)->first();
+
+        if (!$usuario) {
+            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        }
+
+        return response()->json($usuario);
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Ejemplo de actualización de usuario
+        DB::table('public.usuario')->where('id', $id)->update([
+            'nombre' => $request->input('nombre'),
+            'email' => $request->input('email'),
+            // Actualizar otros campos según sea necesario
+        ]);
+
+        return response()->json(['message' => 'Usuario actualizado correctamente']);
+    }
+
+    public function destroy($id)
+    {
+        // Ejemplo de eliminación de usuario
+        DB::table('public.usuario')->where('id', $id)->delete();
+
+        return response()->json(['message' => 'Usuario eliminado correctamente']);
     }
 }
