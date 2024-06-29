@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\ClientesController;
 use App\Http\Controllers\Api\RegistroController;
 use App\Http\Controllers\Api\CategoriaNegocioController;
 use App\Http\Controllers\Api\NegociosController;
+use App\Http\Controllers\Api\CategoriaController;
 
 //RUTAS PARA INICIO Y CIERRE DE SESIÓN
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])
@@ -40,11 +41,19 @@ Route::delete('/negocios/{id}', [NegociosController::class, 'destroy']);
 
 
 // Rutas para Categorías de Negocio
-Route::get('/categorias', [CategoriaNegocioController::class, 'index']);
-Route::post('/categorias', [CategoriaNegocioController::class, 'store']);
-Route::get('/categorias/{id}', [CategoriaNegocioController::class, 'show']);
-Route::put('/categorias/{id}', [CategoriaNegocioController::class, 'update']);
-Route::delete('/categorias/{id}', [CategoriaNegocioController::class, 'destroy']);
+Route::get('/categorias-negocio', [CategoriaNegocioController::class, 'index']);
+Route::post('/categorias-negocio', [CategoriaNegocioController::class, 'store']);
+Route::get('/categorias-negocio/{id}', [CategoriaNegocioController::class, 'show']);
+Route::put('/categorias-negocio/{id}', [CategoriaNegocioController::class, 'update']);
+Route::delete('/categorias-negocio/{id}', [CategoriaNegocioController::class, 'destroy']);
+
+
+// Rutas para Categorías de Cada Negocio
+Route::get('/categorias', [CategoriaController::class, 'index']);
+Route::post('/categorias', [CategoriaController::class, 'store']);
+Route::get('/categorias/{id}', [CategoriaController::class, 'show']);
+Route::put('/categorias/{id}', [CategoriaController::class, 'update']);
+Route::delete('/categorias/{id}', [CategoriaController::class, 'destroy']);
 
 
 // Rutas para Clientes
