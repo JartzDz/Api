@@ -11,7 +11,23 @@ class NegociosController extends Controller
 {
     public function index()
     {
-        $negocios = Negocio::all();
+        $negocios = Negocio::all()->map(function ($negocio) {
+            // Construir las URLs públicas completas de las imágenes
+            if ($negocio->logotipo) {
+                $negocio->logotipo_url = Storage::disk('public')->url($negocio->logotipo);
+            } else {
+                $negocio->logotipo_url = null;
+            }
+
+            if ($negocio->imagen_referencial) {
+                $negocio->imagen_referencial_url = Storage::disk('public')->url($negocio->imagen_referencial);
+            } else {
+                $negocio->imagen_referencial_url = null;
+            }
+
+            return $negocio;
+        });
+
         return response()->json(['message' => 'Lista de negocios obtenida correctamente', 'data' => $negocios], 200);
     }
 
@@ -32,16 +48,13 @@ class NegociosController extends Controller
 
         $logotipo = null;
         if ($request->hasFile('logotipo')) {
-            $uploadedFile = $request->file('logotipo');
-            $logotipo = base64_encode(file_get_contents($uploadedFile->getRealPath())); // Convertir a base64
+            $logotipo = $request->file('logotipo')->store('logotipos', 'public');
         }
 
         $imagen_referencial = null;
         if ($request->hasFile('imagen_referencial')) {
-            $uploadedFile = $request->file('imagen_referencial');
-            $imagen_referencial = base64_encode(file_get_contents($uploadedFile->getRealPath())); // Convertir a base64
+            $imagen_referencial = $request->file('imagen_referencial')->store('imagenes_referenciales', 'public');
         }
-
 
         $negocio = Negocio::create([
             'id_categoria' => $request->id_categoria,
@@ -59,34 +72,30 @@ class NegociosController extends Controller
         return response()->json(['message' => 'Negocio creado correctamente', 'data' => $negocio], 201);
     }
 
+
     public function show($id)
-{
-    $negocio = Negocio::find($id);
+    {
+        $negocio = Negocio::find($id);
 
-    if (!$negocio) {
-        return response()->json(['message' => 'Negocio no encontrado'], 404);
+        if (!$negocio) {
+            return response()->json(['message' => 'Negocio no encontrado'], 404);
+        }
+
+        $data = [
+            'id_categoria' => $negocio->id_categoria,
+            'nombre_negocio' => $negocio->nombre_negocio,
+            'descripcion' => $negocio->descripcion,
+            'horario_apertura' => $negocio->horario_apertura,
+            'horario_cierre' => $negocio->horario_cierre,
+            'horario_oferta' => $negocio->horario_oferta,
+            'logotipo' => $negocio->logotipo ? url('storage/' . $negocio->logotipo) : null,
+            'imagen_referencial' => $negocio->imagen_referencial ? url('storage/' . $negocio->imagen_referencial) : null,
+            'posicion_x' => $negocio->posicion_x,
+            'posicion_y' => $negocio->posicion_y,
+        ];
+
+        return response()->json(['message' => 'Negocio obtenido correctamente', 'data' => $data], 200);
     }
-
-    // Codificar el logotipo y la imagen referencial a base64 si están presentes
-    $logotipo = $negocio->logotipo ? utf8_encode(stream_get_contents($negocio->logotipo)) : null;
-    $imagen_referencial = $negocio->imagen_referencial ? utf8_encode(stream_get_contents($negocio->imagen_referencial)) : null;
-
-    // Preparar los datos del negocio para la respuesta
-    $data = [
-        'id_categoria' => $negocio->id_categoria,
-        'nombre_negocio' => $negocio->nombre_negocio,
-        'descripcion' => $negocio->descripcion,
-        'horario_apertura' => $negocio->horario_apertura,
-        'horario_cierre' => $negocio->horario_cierre,
-        'horario_oferta' => $negocio->horario_oferta,
-        'logotipo' => $logotipo,
-        'imagen_referencial' => $imagen_referencial,
-        'posicion_x' => $negocio->posicion_x,
-        'posicion_y' => $negocio->posicion_y,
-    ];
-
-    return response()->json(['message' => 'Negocio obtenido correctamente', 'data' => $data], 200);
-}
 
 
 
@@ -112,34 +121,27 @@ class NegociosController extends Controller
             return response()->json(['message' => 'Negocio no encontrado'], 404);
         }
 
-         // Guardar logotipo como BLOB si está presente
         if ($request->hasFile('logotipo')) {
-            $logotipoFile = $request->file('logotipo');
-            $logotipoBlob = base64_encode(file_get_contents($logotipoFile->getRealPath())); // Codificar en base64
-            $negocio->logotipo = $logotipoBlob;
+            // Eliminar el logotipo anterior
+            if ($negocio->logotipo) {
+                Storage::disk('public')->delete($negocio->logotipo);
+            }
+            $negocio->logotipo = $request->file('logotipo')->store('logotipos', 'public');
         }
 
-        // Guardar imagen referencial como BLOB si está presente
         if ($request->hasFile('imagen_referencial')) {
-            $imagenReferencialFile = $request->file('imagen_referencial');
-            $imagenReferencialBlob = base64_encode(file_get_contents($imagenReferencialFile->getRealPath())); // Codificar en base64
-            $negocio->imagen_referencial = $imagenReferencialBlob;
+            // Eliminar la imagen referencial anterior
+            if ($negocio->imagen_referencial) {
+                Storage::disk('public')->delete($negocio->imagen_referencial);
+            }
+            $negocio->imagen_referencial = $request->file('imagen_referencial')->store('imagenes_referenciales', 'public');
         }
 
-        // Actualizar campos del negocio
-        $negocio->id_categoria = $request->input('id_categoria', $negocio->id_categoria);
-        $negocio->nombre_negocio = $request->input('nombre_negocio', $negocio->nombre_negocio);
-        $negocio->descripcion = $request->input('descripcion', $negocio->descripcion);
-        $negocio->horario_apertura = $request->input('horario_apertura', $negocio->horario_apertura);
-        $negocio->horario_cierre = $request->input('horario_cierre', $negocio->horario_cierre);
-        $negocio->horario_oferta = $request->input('horario_oferta', $negocio->horario_oferta);
-        $negocio->posicion_x = $request->input('posicion_x', $negocio->posicion_x);
-        $negocio->posicion_y = $request->input('posicion_y', $negocio->posicion_y);
-
-        $negocio->save();
+        $negocio->update($request->except(['logotipo', 'imagen_referencial']));
 
         return response()->json(['message' => 'Negocio actualizado correctamente'], 200);
     }
+
 
     public function destroy($id)
     {
@@ -150,12 +152,17 @@ class NegociosController extends Controller
         }
 
         // Eliminar archivos de imágenes si existen
-        Storage::delete($negocio->logotipo);
-        Storage::delete($negocio->imagen_referencial);
+        if ($negocio->logotipo) {
+            Storage::disk('public')->delete($negocio->logotipo);
+        }
+        if ($negocio->imagen_referencial) {
+            Storage::disk('public')->delete($negocio->imagen_referencial);
+        }
 
         // Eliminar el negocio
         $negocio->delete();
 
         return response()->json(['message' => 'Negocio eliminado correctamente'], 200);
     }
+
 }

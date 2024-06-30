@@ -55,7 +55,8 @@ Route::delete('/categorias-negocio/{id}', [CategoriaNegocioController::class, 'd
 Route::get('/categorias', [CategoriaController::class, 'index']);
 Route::post('/categorias', [CategoriaController::class, 'store']);
 Route::get('/categorias/{id}', [CategoriaController::class, 'show']);
-Route::put('/categorias/{id}', [CategoriaController::class, 'update']);
+Route::get('/categoria/{id}', [CategoriaController::class, 'showCategoria']);
+Route::post('/categorias/{id}', [CategoriaController::class, 'update']);
 Route::delete('/categorias/{id}', [CategoriaController::class, 'destroy']);
 
 // Rutas para Categorías de Cada Negocio

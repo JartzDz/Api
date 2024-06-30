@@ -18,7 +18,7 @@ class Categoria extends Model
         'nombre_categoria',
         'descripcion',
         'habilitado',
-        'imagen',
+        'imagen_categoria',
         'fecha_creacion',
     ];
 
