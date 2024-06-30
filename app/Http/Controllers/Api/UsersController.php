@@ -31,7 +31,19 @@ class UsersController extends Controller
     public function show($id)
     {
         // Consulta un usuario específico por su ID
-        $usuario = DB::table('public.usuario')->where('id', $id)->first();
+        $usuario = DB::table('public.usuario')->where('id_usuario', $id)->first();
+
+        if (!$usuario) {
+            return response()->json(['error' => 'Usuario no encontrado'], 404);
+        }
+
+        return response()->json($usuario);
+    }
+
+    public function show_email($email)
+    {
+        // Consulta un usuario específico por su ID
+        $usuario = DB::table('public.usuario')->where('email', $email)->first();
 
         if (!$usuario) {
             return response()->json(['error' => 'Usuario no encontrado'], 404);
@@ -43,7 +55,7 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         // Ejemplo de actualización de usuario
-        DB::table('public.usuario')->where('id', $id)->update([
+        DB::table('public.usuario')->where('id_usuario', $id)->update([
             'nombre' => $request->input('nombre'),
             'email' => $request->input('email'),
             // Actualizar otros campos según sea necesario
@@ -55,7 +67,7 @@ class UsersController extends Controller
     public function destroy($id)
     {
         // Ejemplo de eliminación de usuario
-        DB::table('public.usuario')->where('id', $id)->delete();
+        DB::table('public.usuario')->where('id_usuario', $id)->delete();
 
         return response()->json(['message' => 'Usuario eliminado correctamente']);
     }

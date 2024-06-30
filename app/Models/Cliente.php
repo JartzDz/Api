@@ -15,6 +15,7 @@ class Cliente extends Model
     protected $primaryKey = 'id_cliente'; // Clave primaria de la tabla
 
     protected $fillable = [
+        'id_cliente',
         'nombre',
         'foto_perfil',
     ];

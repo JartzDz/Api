@@ -22,7 +22,8 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 //RUTAS PARA CRUD DE USUARIOS
 Route::get('/usuarios', [UsersController::class, 'index']); // GET /api/v1/usuarios
 Route::post('/usuarios', [UsersController::class, 'store']); // POST /api/v1/usuarios
-Route::get('/usuarios/{id}', [UsersController::class, 'show']); // GET /api/v1/usuarios/{id}
+Route::get('/usuarios_id/{id}', [UsersController::class, 'show']); // GET /api/v1/usuarios/{id}
+Route::get('/usuarios_email/{email}', [UsersController::class, 'show_email']); // GET /api/v1/usuarios/{id}
 Route::put('/usuarios/{id}', [UsersController::class, 'update']); // PUT /api/v1/usuarios/{id}
 Route::delete('/usuarios/{id}', [UsersController::class, 'destroy']); // DELETE /api/v1/usuarios/{id}
 
@@ -31,14 +32,14 @@ Route::delete('/usuarios/{id}', [UsersController::class, 'destroy']); // DELETE 
 Route::get('/clientes', [ClientesController::class, 'index']);
 Route::post('/clientes', [ClientesController::class, 'store']);
 Route::get('/clientes/{id}', [ClientesController::class, 'show']);
-Route::put('/clientes/{id}', [ClientesController::class, 'update']);
+Route::post('/clientes/{id}', [ClientesController::class, 'update']);
 Route::delete('/clientes/{id}', [ClientesController::class, 'destroy']);
 
 //RUTAS PARA CRUD DE NEGOCIOS
 Route::get('/negocios', [NegociosController::class, 'index']);
 Route::post('/negocios', [NegociosController::class, 'store']);
 Route::get('/negocios/{id}', [NegociosController::class, 'show']);
-Route::put('/negocios/{id}', [NegociosController::class, 'update']);
+Route::post('/negocios/{id}', [NegociosController::class, 'update']);
 Route::delete('/negocios/{id}', [NegociosController::class, 'destroy']);
 
 
@@ -66,7 +67,7 @@ Route::delete('/productos/{id}', [ProductosController::class, 'destroy']);
 
 
 // Rutas para Clientes
-Route::post('/registrarclientes', [ClientesController::class, 'registrarCliente']);
+Route::post('/registrar-cliente', [RegistroController::class, 'registrarCliente']);
 
 // Rutas para Negocios
-Route::post('/registrarnegocios', [NegociosController::class, 'registrarNegocio']);
+Route::post('/registrar-negocio', [RegistroController::class, 'registrarNegocio']);

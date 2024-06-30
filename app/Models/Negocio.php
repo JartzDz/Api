@@ -16,6 +16,7 @@ class Negocio extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'id_negocio',
         'id_categoria',
         'nombre_negocio',
         'descripcion',
@@ -28,23 +29,7 @@ class Negocio extends Model
         'posicion_y',
     ];
 
-    protected $casts = [
-        'horario_apertura' => 'time',
-        'horario_cierre' => 'time',
-        'horario_oferta' => 'time',
-    ];
 
-    // Validación de existencia de id_categoria en la tabla categoria_negocio
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            if (!Categoria_Negocio::where('id_categoria', $model->id_categoria)->exists()) {
-                throw new \Exception('La categoría de negocio especificada no existe.');
-            }
-        });
-    }
 
     // Relación con la tabla de usuarios (uno a uno)
     public function usuario()
@@ -52,9 +37,4 @@ class Negocio extends Model
         return $this->hasOne(User::class, 'id_usuario', 'id_negocio');
     }
 
-    // Relación con la tabla categoria_negocio
-    public function categoria()
-    {
-        return $this->belongsTo(Categoria_Negocio::class, 'id_categoria', 'id_categoria');
-    }
 }
