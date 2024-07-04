@@ -62,8 +62,9 @@ Route::delete('/categorias/{id}', [CategoriaController::class, 'destroy']);
 // Rutas para Categorías de Cada Negocio
 Route::get('/productos', [ProductosController::class, 'index']);
 Route::post('/productos', [ProductosController::class, 'store']);
+Route::get('/producto/{id}', [ProductosController::class, 'showProducto']);
 Route::get('/productos/{id}', [ProductosController::class, 'show']);
-Route::put('/productos/{id}', [ProductosController::class, 'update']);
+Route::post('/productos/{id}', [ProductosController::class, 'update']);
 Route::delete('/productos/{id}', [ProductosController::class, 'destroy']);
 
 
