@@ -1,0 +1,1 @@
+Esta aplicación está diseñada para ser el Backend del Proyecto Final de Programación Web - Too Good To Go, la aplicación está contenida en el archivo Api.zip con todas las configuraciones que necesita Laravel para montar el servidor.
